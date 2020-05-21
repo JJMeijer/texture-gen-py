@@ -19,7 +19,7 @@ palette = [
 	}
 ]
 
-generator = TextureGenerator(palette, 1000)
+generator = TextureGenerator(palette, 10)
 
 random_texture = generator.gen()
 
