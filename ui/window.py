@@ -1,4 +1,4 @@
-from tkinter import Tk, Label, Button
+from tkinter import Tk
 from .texture import TextureCanvas
 from .labels import TitleLabel
 from .buttons import GenButton
@@ -10,8 +10,15 @@ window.geometry('1200x800')
 window.title("Jumper Texture Generator")
 
 def handle_color_input(color):
+    """Color Input handler
+
+    :param color: Tkinter Entry class for a color field.
+    :type color: class
+    :return: Dictionary containing a hex color string and a prio value
+    :rtype: dict
+    """
     c_hex = color['hex'].get()
-    c_prio= int(color['prio'].get())
+    c_prio = int(color['prio'].get())
 
     return {
         'hex': c_hex,
@@ -35,7 +42,7 @@ def generate_texture_settings():
 
     core_palette = list(map(handle_color_input, settings.core_settings.colors))
     edges = list(map(handle_edge_input, settings.edge_settings.edges))
-    
+
     return {
         "size": size,
         "core": {
@@ -45,8 +52,8 @@ def generate_texture_settings():
     }
 
 def on_gen_button():
-    settings = generate_texture_settings()
-    texture_image.gen_image(settings)
+    texture_settings = generate_texture_settings()
+    texture_image.gen_image(texture_settings)
 
 
 title_label = TitleLabel(window)

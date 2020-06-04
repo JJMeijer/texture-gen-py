@@ -1,10 +1,11 @@
-from tkinter import *
+from tkinter import LabelFrame, Frame, Label, Entry
+from tkinter import LEFT, X
 
 
 class SizeSettings():
     def __init__(self, parent):
         self.parent = parent
-    
+
         self.size_group = LabelFrame(parent, text="Size", padx=5, pady=5)
         self.size_group.pack()
 
@@ -12,13 +13,23 @@ class SizeSettings():
         self.height = None
 
         self.generate_size_field()
-    
+
 
     def generate_size_field(self):
+        """Generate Size Input field
+
+        Elements:
+            - Frame
+                - Width Label
+                - Width Entry
+
+                - Height Label
+                - Height Entry
+        """
         master = self.size_group
 
         size_field = Frame(master)
-        size_field.pack()
+        size_field.pack(fill=X)
 
         Label(master=size_field, text='Width').pack(side=LEFT)
         width_entry = Entry(master=size_field, width=15)

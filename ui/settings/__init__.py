@@ -14,4 +14,3 @@ class Settings():
         self.size_settings = SizeSettings(self.settings_frame)
         self.core_settings = CoreSettings(self.settings_frame)
         self.edge_settings = EdgeSettings(self.settings_frame)
-        
