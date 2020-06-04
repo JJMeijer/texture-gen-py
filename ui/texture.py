@@ -1,11 +1,14 @@
-from tkinter import Canvas, LEFT
+from tkinter import Canvas, Frame, LEFT, CENTER
 from PIL import Image, ImageTk
 from generator.texture import TextureGenerator
 
 class TextureCanvas():
     def __init__(self, window):
-        self.canvas = Canvas(window, width=500, height=500)
-        self.canvas.pack(side=LEFT)
+        self.texture_frame = Frame(window)
+        self.texture_frame.place(relx=0.5, rely=0.5, anchor=CENTER)
+
+        self.canvas = Canvas(self.texture_frame, width=500, height=500)
+        self.canvas.pack()
 
         self.img = ImageTk.PhotoImage('RGB')
         self.img_area = self.canvas.create_image(250, 250, image=self.img)

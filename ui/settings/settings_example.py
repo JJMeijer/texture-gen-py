@@ -1,4 +1,4 @@
-texture_settings = {
+settings_example = {
     "size": (20, 20),
     "core": {
         "palette": [

@@ -1,5 +1,5 @@
-from PIL import ImageColor
 from random import randint
+from PIL import ImageColor
 
 
 class TextureCoreGenerator:
@@ -7,7 +7,7 @@ class TextureCoreGenerator:
         """Generator class for a texture Core
 
         Args:
-            palette (list): list of Dictionaries containing a hex color value and a priority value for that color
+            palette (list): list of Dictionaries containing a hex color value and a prio value.
             texture (Image): Pillow Image class.
         """
         self.texture = texture
@@ -16,10 +16,11 @@ class TextureCoreGenerator:
 
 
     def gen_prio_list(self):
-        """Generate a list which gives a representation of priority of each index within a palette list
+        """Generate a list which gives a representation of priority of each
+        index within a palette list
 
         Args:
-            palette (list): list of Dictionaries containing a hex color value and a priority value for that color
+            palette (list): list of Dictionaries containing a hex color value and a prio value.
 
         Returns:
             list: list containing the palette priority representation
@@ -30,6 +31,11 @@ class TextureCoreGenerator:
 
 
     def select_random_palette_color(self):
+        """Select Random color from the palette List
+
+        :return: Random color Dictionary from the palette List
+        :rtype: dict
+        """
         color_index = self.prio_list[randint(0, len(self.prio_list)-1)]
         return self.palette[color_index]['hex']
 
