@@ -1,4 +1,4 @@
-settings_example = {
+DefaultSettings = {
     "size": (20, 20),
     "core": {
         "palette": [

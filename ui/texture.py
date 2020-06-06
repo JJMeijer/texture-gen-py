@@ -1,4 +1,4 @@
-from tkinter import Canvas, Frame, LEFT, CENTER
+from tkinter import Canvas, Frame, CENTER
 from PIL import Image, ImageTk
 from generator.texture import TextureGenerator
 

@@ -11,27 +11,17 @@ class CoreSettings():
 
         self.colors = []
 
-        self.add_color_field("#362417", 80) # Default color field 1
-        self.add_color_field("#2b1d12", 20) # Default color field 2
+        self.add_color_field()
+        self.add_color_field()
 
         self.add_plus_button()
 
 
-    def add_color_field(self, default_hex=None, default_prio=None):
+    def add_color_field(self, color=None):
         """Add Input field for colors
 
-        :param default_hex: default hex value, defaults to None
-        :type default_hex: str, optional
-        :param default_prio: default prio value, defaults to None
-        :type default_prio: int, optional
-
-        Elements:
-            - Frame
-                - Hex Label
-                - Hex Entry
-
-                - Prio Label
-                - Prio Entry
+        :param color: Color values to put in the entries, defaults to None
+        :type color: dict, optional
         """
         master = self.color_group
 
@@ -41,14 +31,15 @@ class CoreSettings():
         Label(master=color_field, text='Hex').pack(side=LEFT)
         color_entry = Entry(master=color_field, width=20)
         color_entry.pack(side=LEFT)
-        if default_hex is not None:
-            color_entry.insert(0, default_hex)
 
         Label(master=color_field, text='Prio').pack(side=LEFT)
         prio_entry = Entry(master=color_field, width=10)
         prio_entry.pack(side=LEFT)
-        if default_prio is not None:
-            prio_entry.insert(0, default_prio)
+
+        if color is not None:
+            color_entry.insert(0, color['hex'])
+            prio_entry.insert(0, color['prio'])
+
 
         self.colors.append({
             'hex': color_entry,

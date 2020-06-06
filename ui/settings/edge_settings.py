@@ -16,7 +16,7 @@ class EdgeSettings():
         self.add_edge_button(master=self.edge_group)
 
 
-    def add_edge_frame(self):
+    def add_edge_frame(self, side='top', width=2, palette=None):
         """Add Edge Frame and add side_field, width_field & color_field
 
         Elements:
@@ -32,7 +32,7 @@ class EdgeSettings():
             edge_settings = {
                 'side': None,
                 'width': None,
-                'colors': []
+                'palette': []
             }
 
             self.edges.append(edge_settings)
@@ -40,39 +40,51 @@ class EdgeSettings():
             edge_dims = Frame(master=edge_group)
             edge_dims.pack(side=TOP)
 
-            edge_colors = Frame(master=edge_group)
-            edge_colors.pack(side=BOTTOM)
+            edge_colors_frame = Frame(master=edge_group)
+            edge_colors_frame.pack(side=BOTTOM)
 
-            self.add_side_field(master=edge_dims, edge_settings=edge_settings)
-            self.add_width_field(master=edge_dims, edge_settings=edge_settings)
-
-            self.add_color_field(
-                master=edge_colors,
+            self.add_side_field(
+                master=edge_dims,
                 edge_settings=edge_settings,
-                default_hex="#0b6623",
-                default_prio=90
+                side=side
             )
 
-            self.add_color_field(
-                master=edge_colors,
+            self.add_width_field(
+                master=edge_dims,
                 edge_settings=edge_settings,
-                default_hex="#109433",
-                default_prio=10
+                width=width
             )
 
-            self.add_color_button(master=edge_colors, edge_settings=edge_settings)
+            if palette is not None:
+                for color in palette:
+                    self.add_color_field(
+                        master=edge_colors_frame,
+                        edge_settings=edge_settings,
+                        color=color
+                    )
+            else:
+                self.add_color_field(
+                    master=edge_colors_frame,
+                    edge_settings=edge_settings,
+                    color=None
+                )
 
 
-    def add_side_field(self, master, edge_settings):
+            self.add_color_button(master=edge_colors_frame, edge_settings=edge_settings)
+
+
+    def add_side_field(self, master, edge_settings, side):
         """Add Side field to input which side this edge describes
 
         :param master: Master Tkinter object of this object
         :type master: class
         :param edge_settings: Dictionary that is used to store the OptionMenu object
         :type edge_settings: dict
+        :param side: Value to put into the side Entry field
+        :type side: string
         """
         side_var = StringVar(master)
-        side_var.set('top')
+        side_var.set(side)
 
         Label(master, text='Side:', padx=5).pack(side=LEFT)
         side_entry = OptionMenu(master, side_var, "top", "right", "bottom", "left")
@@ -81,41 +93,34 @@ class EdgeSettings():
         edge_settings['side'] = side_var
 
 
-    def add_width_field(self, master, edge_settings):
+    def add_width_field(self, master, edge_settings, width):
         """Add Field to set Width of Edge
 
         :param master: Tkinter object that is the master of this object
         :type master: class
         :param edge_settings: Dictionary that is used to store the Entry object
         :type edge_settings: dict
+        :param width: width value for the Entry field
+        :type width: int
+
         """
         Label(master, text='Width:', padx=5).pack(side=LEFT)
         width_entry = Entry(master, width=5)
         width_entry.pack(side=LEFT)
-        width_entry.insert(0, '2')
+        width_entry.insert(0, width)
 
         edge_settings['width'] = width_entry
 
 
-    def add_color_field(self, master, edge_settings, default_hex=None, default_prio=None):
-        """Generate Input field for colors
+    def add_color_field(self, master, edge_settings, color):
+        """Add Color Entry fram with an Hex & prio Entry
 
-        :param master: Tkinter object that is the master of this object
+        :param master: Master tkinter element
         :type master: class
-        :param edge_settings: Dictionary that is used to store the Entry object
+        :param edge_settings: Dictionary containing all edge settings Entry elements
         :type edge_settings: dict
-        :param default_hex: Default color hex value, defaults to None
-        :type default_hex: str, optional
-        :param default_prio: Default color prio value, defaults to None
-        :type default_prio: int, optional
-
-        Elements:
-            - Frame
-                - Hex Label
-                - Hex Entry
-
-                - Prio Label
-                - Prio Entry
+        :param color: Dictionary with values to put into the entry fields on creation
+        :type color: dict
         """
         color_field = Frame(master)
         color_field.pack()
@@ -123,31 +128,37 @@ class EdgeSettings():
         Label(color_field, text='Hex:').pack(side=LEFT)
         color_entry = Entry(color_field, width=20)
         color_entry.pack(side=LEFT)
-        if default_hex is not None:
-            color_entry.insert(0, default_hex)
 
         Label(color_field, text='Prio:').pack(side=LEFT)
         prio_entry = Entry(color_field, width=10)
         prio_entry.pack(side=LEFT)
-        if default_prio is not None:
-            prio_entry.insert(0, default_prio)
 
-        edge_settings['colors'].append({
+        if color is not None:
+            color_entry.insert(0, color['hex'])
+            prio_entry.insert(0, color['prio'])
+
+        edge_settings['palette'].append({
             'hex': color_entry,
             'prio': prio_entry
         })
 
 
     def add_color_button(self, master, edge_settings):
-        """Add Plus Button to generate extra color fields
+        """Add + button to add color fields in the edge settings
 
-        Elements:
-            - Button
+        :param master: master tkinter element
+        :type master: class
+        :param edge_settings: Dictionary containing all edge setttings Entry elements
+        :type edge_settings: dict
         """
         plus_button = Button(
             master,
             text='+',
-            command=lambda: self.add_color_field(master=master, edge_settings=edge_settings),
+            command=lambda: self.add_color_field(
+                master=master,
+                edge_settings=edge_settings,
+                color=None
+            ),
             justify=CENTER
         )
         plus_button.pack(side=BOTTOM)
