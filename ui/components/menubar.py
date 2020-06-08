@@ -1,9 +1,11 @@
 from tkinter import Menu
+from .texture_setup import DefaultSetup
+
 
 class MenuBar():
-    def __init__(self, window, reset_command):
-        self.window = window
-        self.reset_command = reset_command
+    def __init__(self, root):
+        self.root = root
+        self.window = root.window
 
         self.menubar = self.add_menu_bar()
         self.window.config(menu=self.menubar)
@@ -39,8 +41,28 @@ class MenuBar():
             command=self.exit_command
         )
 
+        file_menu.add_command(
+            label='Save',
+            command=self.save_command
+        )
+
+        file_menu.add_command(
+            label='Export Image',
+            command=self.export_command
+        )
+
         return file_menu
 
+
+    def reset_command(self):
+        self.root.setup.process_import(DefaultSetup)
+        self.root.texture_canvas.gen_image()
+
+    def save_command(self):
+        pass
+
+    def export_command(self):
+        pass
 
     def exit_command(self):
         """Quit the window"""

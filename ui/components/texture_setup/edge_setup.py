@@ -1,12 +1,14 @@
+import re
+
 from tkinter import Frame, LabelFrame, Label, Button, Entry, OptionMenu, StringVar
-from tkinter import LEFT, CENTER, BOTTOM, X, TOP
+from tkinter import LEFT, RIGHT, CENTER, BOTTOM, X, TOP
 
 
-class EdgeSettings():
+class EdgeSetup():
     def __init__(self, master):
         self.master = master
 
-        self.edge_group = LabelFrame(master, text="Edges", padx=5, pady=5)
+        self.edge_group = LabelFrame(master, text="Edges", padx=5, pady=10)
         self.edge_group.pack(fill=X)
 
         self.edges = []
@@ -40,8 +42,11 @@ class EdgeSettings():
             edge_dims = Frame(master=edge_group)
             edge_dims.pack(side=TOP)
 
-            edge_colors_frame = Frame(master=edge_group)
-            edge_colors_frame.pack(side=BOTTOM)
+            edge_color_setup = LabelFrame(master=edge_group, text="Edge Colors", padx=5, pady=5)
+            edge_color_setup.pack(side=BOTTOM)
+
+            edge_color_group = Frame(master=edge_color_setup)
+            edge_color_group.pack(side=TOP)
 
             self.add_side_field(
                 master=edge_dims,
@@ -58,19 +63,22 @@ class EdgeSettings():
             if palette is not None:
                 for color in palette:
                     self.add_color_field(
-                        master=edge_colors_frame,
+                        color_group=edge_color_group,
                         edge_settings=edge_settings,
                         color=color
                     )
             else:
                 self.add_color_field(
-                    master=edge_colors_frame,
+                    color_group=edge_color_group,
                     edge_settings=edge_settings,
                     color=None
                 )
 
-
-            self.add_color_button(master=edge_colors_frame, edge_settings=edge_settings)
+            self.add_color_buttons(
+                master=edge_color_setup,
+                color_group=edge_color_group,
+                edge_settings=edge_settings
+            )
 
 
     def add_side_field(self, master, edge_settings, side):
@@ -112,17 +120,17 @@ class EdgeSettings():
         edge_settings['width'] = width_entry
 
 
-    def add_color_field(self, master, edge_settings, color):
+    def add_color_field(self, color_group, edge_settings, color):
         """Add Color Entry fram with an Hex & prio Entry
 
-        :param master: Master tkinter element
-        :type master: class
+        :param color_group: Master tkinter element
+        :type color_group: class
         :param edge_settings: Dictionary containing all edge settings Entry elements
         :type edge_settings: dict
         :param color: Dictionary with values to put into the entry fields on creation
         :type color: dict
         """
-        color_field = Frame(master)
+        color_field = Frame(color_group)
         color_field.pack()
 
         Label(color_field, text='Hex:').pack(side=LEFT)
@@ -136,6 +144,8 @@ class EdgeSettings():
         if color is not None:
             color_entry.insert(0, color['hex'])
             prio_entry.insert(0, color['prio'])
+        else:
+            prio_entry.insert(0, 1)
 
         edge_settings['palette'].append({
             'hex': color_entry,
@@ -143,25 +153,47 @@ class EdgeSettings():
         })
 
 
-    def add_color_button(self, master, edge_settings):
-        """Add + button to add color fields in the edge settings
+    def remove_color_field(self, color_group, edge_settings):
+        if len(edge_settings['palette']) > 0:
+            edge_settings['palette'].pop()
 
-        :param master: master tkinter element
-        :type master: class
-        :param edge_settings: Dictionary containing all edge setttings Entry elements
-        :type edge_settings: dict
-        """
+        color_entries = color_group.children
+        if len(color_entries) > 0:
+            last_color = color_entries.popitem()[1]
+            last_color.pack_forget()
+            last_color.destroy()
+
+
+    def add_color_buttons(self, master, color_group, edge_settings):
+        button_frame = Frame(master)
+        button_frame.pack(side=BOTTOM)
+
         plus_button = Button(
-            master,
+            button_frame,
             text='+',
+            justify=CENTER,
             command=lambda: self.add_color_field(
-                master=master,
+                color_group=color_group,
                 edge_settings=edge_settings,
                 color=None
-            ),
-            justify=CENTER
+            )
         )
-        plus_button.pack(side=BOTTOM)
+
+        plus_button.config(width=2, height=1)
+        plus_button.pack(side=LEFT)
+
+        minus_button = Button(
+            button_frame,
+            text='-',
+            justify=CENTER,
+            command=lambda: self.remove_color_field(
+                color_group=color_group,
+                edge_settings=edge_settings
+            )
+        )
+
+        minus_button.config(width=2, height=1)
+        minus_button.pack(side=RIGHT)
 
 
     def add_edge_button(self, master):
@@ -177,3 +209,18 @@ class EdgeSettings():
             justify=CENTER
         )
         plus_button.pack(side=BOTTOM)
+
+
+    def flush_edges(self):
+        self.edges = []
+
+        edge_entries = self.edge_group.children
+        delete_list = []
+        for child in edge_entries:
+            if re.search('labelframe', child):
+                edge_entries[child].pack_forget()
+                delete_list.append(edge_entries[child])
+
+        while len(delete_list) > 0:
+            child = delete_list.pop()
+            child.destroy()

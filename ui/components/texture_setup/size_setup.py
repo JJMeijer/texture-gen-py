@@ -2,7 +2,7 @@ from tkinter import LabelFrame, Frame, Label, Entry
 from tkinter import LEFT, X
 
 
-class SizeSettings():
+class SizeSetup():
     def __init__(self, parent):
         self.parent = parent
 

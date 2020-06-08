@@ -1,4 +1,4 @@
-DefaultSettings = {
+DefaultSetup = {
     "size": (20, 20),
     "core": {
         "palette": [
