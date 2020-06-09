@@ -11,25 +11,29 @@ class EdgeSetup():
         self.edge_group = LabelFrame(master, text="Edges", padx=5, pady=10)
         self.edge_group.pack(fill=X)
 
-        self.edges = []
+        self.edges = Frame(self.edge_group)
+        self.edges.pack(side=TOP)
 
-        self.add_edge_frame()
+        self.edge_data = []
 
-        self.add_edge_button(master=self.edge_group)
+        self.add_edge()
+
+        self.add_edge_buttons()
 
 
-    def add_edge_frame(self, side='top', width=2, palette=None):
+    def add_edge(self, side='top', width=2, palette=None):
         """Add Edge Frame and add side_field, width_field & color_field
 
         Elements:
             - LabelFrame
         """
-        edge_n = len(self.edges)
+        current_edges = self.edges.children
+        edge_n = len(current_edges)
         if edge_n < 4:
-            master = self.edge_group
+            master = self.edges
 
-            edge_group = LabelFrame(master, text=f'Edge {edge_n + 1}', padx=5, pady=5)
-            edge_group.pack()
+            edge = LabelFrame(master, text=f'Edge {edge_n + 1}', padx=5, pady=5)
+            edge.pack()
 
             edge_settings = {
                 'side': None,
@@ -37,12 +41,10 @@ class EdgeSetup():
                 'palette': []
             }
 
-            self.edges.append(edge_settings)
-
-            edge_dims = Frame(master=edge_group)
+            edge_dims = Frame(master=edge)
             edge_dims.pack(side=TOP)
 
-            edge_color_setup = LabelFrame(master=edge_group, text="Edge Colors", padx=5, pady=5)
+            edge_color_setup = LabelFrame(master=edge, text="Edge Colors", padx=5, pady=5)
             edge_color_setup.pack(side=BOTTOM)
 
             edge_color_group = Frame(master=edge_color_setup)
@@ -80,17 +82,21 @@ class EdgeSetup():
                 edge_settings=edge_settings
             )
 
+            self.edge_data.append(edge_settings)
+
+
+    def remove_edge(self):
+        if len(self.edge_data) > 0:
+            self.edge_data.pop()
+
+        edge_entries = self.edges.children
+        if len(edge_entries) > 0:
+            last_entry = edge_entries.popitem()[1]
+            last_entry.pack_forget()
+            last_entry.destroy()
+
 
     def add_side_field(self, master, edge_settings, side):
-        """Add Side field to input which side this edge describes
-
-        :param master: Master Tkinter object of this object
-        :type master: class
-        :param edge_settings: Dictionary that is used to store the OptionMenu object
-        :type edge_settings: dict
-        :param side: Value to put into the side Entry field
-        :type side: string
-        """
         side_var = StringVar(master)
         side_var.set(side)
 
@@ -102,16 +108,6 @@ class EdgeSetup():
 
 
     def add_width_field(self, master, edge_settings, width):
-        """Add Field to set Width of Edge
-
-        :param master: Tkinter object that is the master of this object
-        :type master: class
-        :param edge_settings: Dictionary that is used to store the Entry object
-        :type edge_settings: dict
-        :param width: width value for the Entry field
-        :type width: int
-
-        """
         Label(master, text='Width:', padx=5).pack(side=LEFT)
         width_entry = Entry(master, width=5)
         width_entry.pack(side=LEFT)
@@ -121,15 +117,6 @@ class EdgeSetup():
 
 
     def add_color_field(self, color_group, edge_settings, color):
-        """Add Color Entry fram with an Hex & prio Entry
-
-        :param color_group: Master tkinter element
-        :type color_group: class
-        :param edge_settings: Dictionary containing all edge settings Entry elements
-        :type edge_settings: dict
-        :param color: Dictionary with values to put into the entry fields on creation
-        :type color: dict
-        """
         color_field = Frame(color_group)
         color_field.pack()
 
@@ -196,25 +183,34 @@ class EdgeSetup():
         minus_button.pack(side=RIGHT)
 
 
-    def add_edge_button(self, master):
-        """Add Plus Button to generate extra edge frames
+    def add_edge_buttons(self):
+        button_frame = Frame(self.edge_group)
+        button_frame.pack(side=BOTTOM)
 
-        Elements:
-            - Button
-        """
+
         plus_button = Button(
-            master=master,
+            button_frame,
             text='+',
-            command=self.add_edge_frame,
+            command=self.add_edge,
             justify=CENTER
         )
-        plus_button.pack(side=BOTTOM)
+        plus_button.config(width=2, height=1)
+        plus_button.pack(side=LEFT)
+
+        minus_button = Button(
+            button_frame,
+            text='-',
+            command=self.remove_edge,
+            justify=CENTER
+        )
+        minus_button.config(width=2, height=1)
+        minus_button.pack(side=RIGHT)
 
 
     def flush_edges(self):
-        self.edges = []
+        self.edge_data = []
 
-        edge_entries = self.edge_group.children
+        edge_entries = self.edges.children
         delete_list = []
         for child in edge_entries:
             if re.search('labelframe', child):

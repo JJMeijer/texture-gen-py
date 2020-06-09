@@ -1,4 +1,6 @@
 from tkinter import Canvas, Frame, CENTER
+from tkinter.filedialog import asksaveasfilename
+
 from PIL import Image, ImageTk
 from generator.texture import TextureGenerator
 
@@ -13,8 +15,9 @@ class TextureCanvas():
         self.canvas = Canvas(self.texture_frame, width=500, height=500)
         self.canvas.pack()
 
-        self.img = ImageTk.PhotoImage('RGB')
-        self.img_area = self.canvas.create_image(250, 250, image=self.img)
+        self.texture = Image.new('RGB', size=(0,0))
+        self.tk_image = ImageTk.PhotoImage(self.texture)
+        self.img_area = self.canvas.create_image(250, 250, image=self.tk_image)
 
 
     def gen_image(self):
@@ -25,8 +28,20 @@ class TextureCanvas():
         """
         setup_obj = self.root.setup.parse_setup()
 
-        texture = TextureGenerator(setup_obj).gen()
-        texture = texture.resize((400, 400), Image.NEAREST)
+        generated_texture = TextureGenerator(setup_obj).gen()
+        self.texture = generated_texture.resize((400, 400), Image.NEAREST)
 
-        self.img = ImageTk.PhotoImage(texture)
-        self.canvas.itemconfig(self.img_area, image=self.img)
+        self.tk_image = ImageTk.PhotoImage(self.texture)
+        self.canvas.itemconfig(self.img_area, image=self.tk_image)
+
+
+    def export_image(self):
+        filename = asksaveasfilename(
+            title='Export Image',
+            filetypes=(
+                ('PNG Image', '*.png'),
+            ),
+            defaultextension=''
+        )
+
+        self.texture.save(filename)

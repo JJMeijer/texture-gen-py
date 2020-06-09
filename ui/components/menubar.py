@@ -36,20 +36,33 @@ class MenuBar():
             command=self.reset_command
         )
 
+        file_menu.add_separator()
+
         file_menu.add_command(
-            label='Exit',
-            command=self.exit_command
+            label='Save Setup',
+            command=self.save_setup_command
         )
 
         file_menu.add_command(
-            label='Save',
-            command=self.save_command
+            label='Load Setup',
+            command=self.load_setup_command
         )
+
+        file_menu.add_separator()
 
         file_menu.add_command(
             label='Export Image',
             command=self.export_command
         )
+
+        file_menu.add_separator()
+
+        file_menu.add_command(
+            label='Exit',
+            command=self.exit_command
+        )
+
+
 
         return file_menu
 
@@ -58,11 +71,14 @@ class MenuBar():
         self.root.setup.process_import(DefaultSetup)
         self.root.texture_canvas.gen_image()
 
-    def save_command(self):
-        pass
+    def save_setup_command(self):
+        self.root.setup.process_save_setup()
+
+    def load_setup_command(self):
+        self.root.setup.process_load_setup()
 
     def export_command(self):
-        pass
+        self.root.texture_canvas.export_image()
 
     def exit_command(self):
         """Quit the window"""

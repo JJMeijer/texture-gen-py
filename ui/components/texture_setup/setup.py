@@ -1,4 +1,7 @@
-from tkinter import Frame, RIGHT, END
+import json
+from tkinter import Frame
+from tkinter import RIGHT, END
+from tkinter.filedialog import asksaveasfile, askopenfile
 
 from .core_setup import CoreSetup
 from .size_setup import SizeSetup
@@ -42,7 +45,7 @@ class Setup():
         )
 
         core_palette = list(map(self.handle_color_input, self.core_setup.palette))
-        edges = list(map(self.handle_edge_input, self.edge_setup.edges))
+        edges = list(map(self.handle_edge_input, self.edge_setup.edge_data))
 
         return {
             "size": size,
@@ -83,4 +86,37 @@ class Setup():
             side = edge['side']
             width = edge['width']
             palette = edge['palette']
-            self.edge_setup.add_edge_frame(side, width, palette)
+            self.edge_setup.add_edge(side, width, palette)
+
+
+    def process_save_setup(self):
+        data = self.parse_setup()
+        data_string = json.dumps(data, indent=4)
+
+        file = asksaveasfile(
+            mode='w',
+            title='Save Setup',
+            filetypes=(
+                ("JSON", "*.json"),
+            ),
+            defaultextension=''
+        )
+
+        if file:
+            file.write(data_string)
+            file.close()
+
+
+    def process_load_setup(self):
+        file = askopenfile(
+            mode='r',
+            title='Load Setup',
+            filetypes=(
+                ('JSON', '*json'),
+            )
+        )
+
+        if file:
+            data_string = file.read()
+            data = json.loads(data_string)
+            self.process_import(data)
