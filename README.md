@@ -1,6 +1,6 @@
 # texture-gen-py
 
-Pixel art style texture generator. Prototype written in Python
+Pixel art style texture generator.
 
 ## Install
 

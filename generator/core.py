@@ -14,7 +14,6 @@ class TextureCoreGenerator:
         self.palette = palette
         self.gen_prio_list()
 
-
     def gen_prio_list(self):
         """Generate a list which gives a representation of priority of each
         index within a palette list
@@ -27,8 +26,7 @@ class TextureCoreGenerator:
         """
         self.prio_list = []
         for index, color in enumerate(self.palette):
-            self.prio_list += [index] * color['prio']
-
+            self.prio_list += [index] * color["prio"]
 
     def select_random_palette_color(self):
         """Select Random color from the palette List
@@ -36,9 +34,8 @@ class TextureCoreGenerator:
         :return: Random color Dictionary from the palette List
         :rtype: dict
         """
-        color_index = self.prio_list[randint(0, len(self.prio_list)-1)]
-        return self.palette[color_index]['hex']
-
+        color_index = self.prio_list[randint(0, len(self.prio_list) - 1)]
+        return self.palette[color_index]["hex"]
 
     def gen_core(self):
         """Loop through texture and give each pixel in the texture a random color.

@@ -7,11 +7,11 @@ from .components import TextureCanvas
 from .components import Setup
 
 
-class Root():
+class Root:
     def __init__(self):
         window = Tk()
-        window.geometry('1200x800')
-        window.title('Jumper Texture Generator')
+        window.geometry("1200x800")
+        window.title("Texture Generator")
 
         self.window = window
 
@@ -21,11 +21,6 @@ class Root():
         self.texture_canvas = TextureCanvas(self)
         self.setup = Setup(self.window)
 
-
     def start(self):
         self.menubar.reset_command()
         self.window.mainloop()
-
-
-app = Root()
-app.start()
